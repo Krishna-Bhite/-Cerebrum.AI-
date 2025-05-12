@@ -45,3 +45,26 @@ export const getRandomInterviewCover = () => {
   const randomIndex = Math.floor(Math.random() * interviewCovers.length);
   return `/covers${interviewCovers[randomIndex]}`;
 };
+
+
+// Get actual compnany logo from clearbit
+export async function getCompanyLogo(companyName : string) {
+  const fallbackLogo = '/companyLogo.png';
+
+  // Normalize name: remove spaces, to lowercase, fix common misspellings if needed
+  const normalized = companyName.trim().toLowerCase();
+
+  // Construct Clearbit logo URL
+  const logoUrl = `https://logo.clearbit.com/${normalized}.com`;
+
+  try {
+    const res = await fetch(logoUrl, { method: 'HEAD' }); // Just check if it exists
+    if (res.ok) {
+      return logoUrl;
+    } else {
+      return fallbackLogo;
+    }
+  } catch (error) {
+    return fallbackLogo;
+  }
+}

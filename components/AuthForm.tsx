@@ -1,5 +1,9 @@
 "use client";
 import React from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +23,9 @@ import { toast } from "react-hot-toast";
 import FormField from "@/components/FormField";
 import { useRouter } from "next/navigation";
 import { on } from "events";
+import { create } from "domain";
+import { auth } from "@/firebase/client";
+import { setSessionCookie, signUp } from "@/lib/actions/auth.action";
 
 // const formSchema = z.object({
 //   username: z.string().min(2).max(50),
@@ -72,21 +79,68 @@ const AuthForm = ({ type }: { type: FormType }) => {
   };
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (isSignIn) {
         // Sign in logic
+        const { email, password } = values;
+        try {
+          const veryfiedUser = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          // Set the session cookie
+          const token = await veryfiedUser.user.getIdToken();
+          await setSessionCookie(token);
+        } catch (error: any) {
+          onError(
+            "No account found with this email,\n or the credentials are incorrect."
+          );
+          return;
+        }
+
         onSuccess("Sign in successful!");
-        router.push("/");
+        router.push("/home");
         console.log("Sign in", values);
       } else {
         // Sign up logic
-        onSuccess("Sign up successful!");
-        router.push("/");
-        console.log("Sign up", values);
+        const { name, email, password } = values;
+        try {
+          const userCredientials = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          const result = await signUp({
+            uid: userCredientials.user.uid,
+            name: name!,
+            email: email,
+            password: password,
+          });
+
+          if (!result?.success) {
+            onError(result?.message);
+            return;
+          }
+
+          // Set the session cookie
+          const token = await userCredientials.user.getIdToken();
+          await setSessionCookie(token);
+
+          onSuccess(result.message);
+          router.push("/");
+          console.log("Sign up", values);
+        } catch (error: any) {
+          console.log(error);
+          onError("User already exists. Please sign in.");
+          return;
+        }
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       onError("An error occurred. Please try again.");
     }
   }

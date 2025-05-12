@@ -14,6 +14,7 @@ interface Feedback {
 }
 
 interface Interview {
+  companyName?: string;
   id: string;
   role: string;
   level: string;
@@ -39,6 +40,7 @@ interface User {
 }
 
 interface InterviewCardProps {
+  companyName?: string;
   interviewId?: string;
   userId?: string;
   role: string;

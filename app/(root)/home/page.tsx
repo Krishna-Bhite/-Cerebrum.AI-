@@ -1,5 +1,6 @@
 import InterviewCard from "@/components/InterviewCard";
 import { Button } from "@/components/ui/button";
+import { WavyBackgroundDemo } from "@/components/WavyBackgroundDemo";
 import { dummyInterviews } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +9,8 @@ import React from "react";
 const page = () => {
   return (
     <>
+      {/* <WavyBackgroundDemo /> */}
+
       <section className="card-cta">
         <div className="flex flex-col gap-6 lg:max-w-lg w-full">
           <h2>Get Interview-Ready with AI-Powered Practice and Feedback</h2>
@@ -40,7 +43,7 @@ const page = () => {
         </div>
       </section>
 
-      <section className="flex flex-col gap-6 mt-8">
+      <section className="flex flex-col gap-6 mt-16">
         <h2>Take an Interview</h2>
         <div className="interviews-section">
           {dummyInterviews.map((interview: Interview) => (
