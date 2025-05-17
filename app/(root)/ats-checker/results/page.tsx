@@ -18,7 +18,6 @@ const page = ({
   const scoreFinal = JSON.parse(score as string);
 
   const radarData: any = [];
-  console.log(scoreFinal);
 
   [
     {
