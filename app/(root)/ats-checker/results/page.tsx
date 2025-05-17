@@ -51,8 +51,8 @@ const page = ({
   return (
     <div className="border-2 border-gray-400 p-4 rounded-sm flex flex-col gap-2">
       <h3 className="font-semibold text-center">Your Report Card</h3>
-      <div className="flex flex-col gap-2 md:flex-row">
-        <div className="flex flex-col gap-2 w-full md:w-1/2 items-center border-1 border-gray-400 p-2 rounded-sm h-[700px]">
+      <div className="flex flex-col gap-2 md:flex-row h-[700px]">
+        <div className="flex flex-col gap-2 w-full md:w-1/2 items-center border-1 border-gray-400 p-2 rounded-sm h-full">
           <h4 className="font-semibold text-2xl">ATS Score</h4>
           <AtsResult score={scoreFinal?.overallScore} />
           <div className="flex flex-col gap-2 w-full px-4">
