@@ -36,6 +36,7 @@ Job Description: ${
 Resume Text: ${text}
 
 Please evaluate the resume and return a structured JSON response with the following format. Each score should be an integer between 0 and 100, where 100 represents an ideal match. Return only this JSON object with no extra commentary.
+Check wether the skills match with the job description or not and if the resume is not a resume then return a poor score accordingly.
 
 {
   "overallScore": number, // Final weighted score based on all categories
@@ -194,3 +195,54 @@ ${transcriptText}`,
     return { success: false, error: e.message };
   }
 };
+
+export const getCoverLetter = async (data: {Description:string, document:string, tone: "professional" | "casual" | "energetic" | "enthusastic"}) => {
+  try{
+    const {Description, document, tone} = data;
+    const response = await axios.get(document, {
+      responseType: "arraybuffer",
+    });
+
+    const buffer = Buffer.from(response.data);
+
+    const { value: text } = await mammoth.extractRawText({ buffer });
+
+    const atsResponse = await generateText({
+  model: google("gemini-2.0-flash-001"),
+  prompt: `
+You are a professional Cover Letter Generator.
+
+You will receive the following inputs:
+1. A parsed **resume** of the candidate.
+2. A **job description** with the company's name, role requirements, and expectations.
+3. A **tone** preference (e.g., formal, enthusiastic, friendly).
+
+Your task is to:
+- Write a compelling, well-structured cover letter tailored to the job description and company.
+- Highlight the candidate’s relevant experience, skills, and achievements using the resume.
+- Adapt the writing style to match the specified tone.
+- Keep the letter concise (ideally 3–4 paragraphs), professional, and personalized.
+
+Do **not** repeat the resume word-for-word — summarize and adapt it for a cover letter.
+
+Wait for the inputs before generating the letter.
+and if you found the text is not a resume then just return a message "Please provide a valid resume text." and if the text is a resume then return the cover letter.
+
+When you're ready, I will provide:
+- resumeText: string
+- jobDescription: string
+- tone: string
+Candidate's Resume: ${text}
+Job Description: ${Description ? Description : "No job description provided. Please generate a overall best coverletter."}
+Tone: ${tone}
+Generate a well-structured cover letter based on the above inputs. Make sure to include the company name and role in the letter. The letter should be concise, professional, and tailored to the job description.
+Return only the cover letter text, without any additional commentary or explanations.
+`,
+});
+
+  return atsResponse.text.trim();
+  }catch(e:any){
+    console.error("Error in getCoverLetter:", e);
+    return { success: false, error: e.message };
+  }
+}

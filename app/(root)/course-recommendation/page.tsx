@@ -5,29 +5,55 @@ import {
 } from "@/lib/actions/user.actions";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { set } from "zod";
 
 const page = () => {
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page");
+  const router = useRouter();
+
   const [isActive, setIsActive] = React.useState<"course" | "deep">("course");
   const handleClick = (type: "course" | "deep") => {
     setIsActive(type);
     setData(null);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete("page");
+    router.push(`${window.location.pathname}?${searchParams.toString()}`);
   };
   const [data, setData] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
 
+  // Pagenation for timestamps
+  const p = page ? parseInt(page) : 1;
+  const hasPrev = 1 * (p - 1) > 0;
+  const hasNext = 1 * (p - 1) + 1 < data?.timestamps?.length;
+
+  const changePage = (newPage: number) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("page", newPage.toString());
+    router.push(`${window.location.pathname}?${searchParams.toString()}`);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const value = (e.currentTarget[0] as HTMLInputElement).value;
     if (!value) return;
+
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete("page");
+    router.push(`${window.location.pathname}?${searchParams.toString()}`);
     // Handle form submission logic here
     try {
       setLoading(true);
       if (isActive === "course") {
         const response = await getCourseRecommendation(value);
         setData(response);
+        console.log(response);
+        console.log(Array.isArray(response));
+        console.log(typeof response);
       } else {
         const response = await getDetails(value);
         setData(response);
@@ -90,13 +116,13 @@ const page = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-6 p-4">
-                <div className="h-[45px] w-full animate-pulse bg-gray-300 rounded-md"/>
-                <div className="h-[160px] w-full animate-pulse bg-gray-300 rounded-md"/>
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="h-[160px] w-full md:w-1/2 animate-pulse bg-gray-300 rounded-md"/>
-                  <div className="h-[160px] w-full md:w-1/2 animate-pulse bg-gray-300 rounded-md"/>
-                </div>
-                <div className="h-[160px] w-full animate-pulse bg-gray-300 rounded-md"/>
+              <div className="h-[45px] w-full animate-pulse bg-gray-300 rounded-md" />
+              <div className="h-[160px] w-full animate-pulse bg-gray-300 rounded-md" />
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="h-[160px] w-full md:w-1/2 animate-pulse bg-gray-300 rounded-md" />
+                <div className="h-[160px] w-full md:w-1/2 animate-pulse bg-gray-300 rounded-md" />
+              </div>
+              <div className="h-[160px] w-full animate-pulse bg-gray-300 rounded-md" />
             </div>
           )
         ) : isActive === "course" && data ? (
@@ -191,6 +217,45 @@ const page = () => {
               <h2 className="text-lg font-bold text-[#4d5bf9]">Conclusion</h2>
               <div className="w-full h-[5px] bg-[#ff7700] rounded-full mb-4" />
               <p className="text-gray-500 font-semibold">{data?.conclusion}</p>
+            </div>
+            <div className="flex flex-col gap-2 bg-[#1e1e1e] py-4 px-4 rounded-md">
+              <h2 className="text-lg font-bold text-[#4d5bf9]">Timestamps</h2>
+              <div className="w-full h-[5px] bg-[#ff7700] rounded-full mb-4" />
+              <div className="flex mb-4">
+                <h4 className="font-semibold text-blue-500 mr-3">{data?.timestamps?.[p]?.time}</h4>
+                <p className="font-semibold text-gray-500">{data?.timestamps?.[p]?.summary}</p>
+              </div>
+              <div className="flex justify-between">
+                <button
+                  className="py-1 px-2 bg-[#ff7700] rounded-md"
+                  onClick={() => {
+                    changePage(p - 1);
+                  }}
+                  disabled={!hasPrev}
+                >
+                  Prev
+                </button>
+                <div className="flex gap-2 items-center">
+                  {Array.from(
+                    { length: Math.ceil(data?.timestamps?.length / 1) },
+                    (_, i) => {
+                      const pageIndex = i + 1;
+                      return (
+                        <div className={`${p === pageIndex ? "bg-[#ff7700]" : "bg-slate-500"} rounded-full size-3`} key={pageIndex}/>
+                      );
+                    }
+                  )}
+                </div>
+                <button
+                  className="py-1 px-2 bg-[#ff7700] rounded-md"
+                  onClick={() => {
+                    changePage(p + 1);
+                  }}
+                  disabled={!hasNext}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         ) : (

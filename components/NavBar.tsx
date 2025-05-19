@@ -21,23 +21,23 @@ import { use } from "react";
 const menuItems = [
   {
     name: "Dashboard",
-    icon: "dashboard",
+    icon: "/home.png",
     link: "/home",
   },
   {
     name: "ATS Checker",
-    icon: "settings",
+    icon: "/resume.png",
     link: "/ats-checker",
   },
   {
     name: "Course Recommendation",
-    icon: "profile",
+    icon: "/course.png",
     link: "/course-recommendation",
   },
 
   {
     name: "Cover Letter",
-    icon: "interview",
+    icon: "/coverletter.png",
     link: "/cover-letter",
   },
 ];
@@ -76,7 +76,7 @@ export function NavBar() {
                         { "bg-accent-100": isActive }
                       )}
                     >
-                      <div>Img</div>
+                      <Image src={item.icon} alt="img" height={30} width={30}/>
                       <h4 className="font-bold">{item.name}</h4>
                     </div>
                   </Link>

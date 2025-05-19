@@ -51,8 +51,8 @@ const page = ({
   return (
     <div className="border-2 border-gray-400 p-4 rounded-sm flex flex-col gap-2">
       <h3 className="font-semibold text-center">Your Report Card</h3>
-      <div className="flex flex-col gap-2 md:flex-row h-[700px]">
-        <div className="flex flex-col gap-2 w-full md:w-1/2 items-center border-1 border-gray-400 p-2 rounded-sm h-full">
+      <div className="flex flex-col gap-2 md:flex-row">
+        <div className="flex flex-col gap-2 w-full md:w-1/2 items-center border-1 border-gray-400 p-2 rounded-sm h-[700px]">
           <h4 className="font-semibold text-2xl">ATS Score</h4>
           <AtsResult score={scoreFinal?.overallScore} />
           <div className="flex flex-col gap-2 w-full px-4">
@@ -68,12 +68,12 @@ const page = ({
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/2">
-          <div className="flex flex-col gap-2 border-1 border-gray-400 p-2 rounded-sm h-[58%] items-center">
+          <div className="flex flex-col gap-2 border-1 border-gray-400 p-2 rounded-sm h-[400px] items-center">
             <h4 className="font-semibold text-2xl">Radar Graph</h4>
             <RadarGraph data={radarData} />
           </div>
 
-          <div className="flex flex-col gap-2 border-1 border-gray-400 p-2 rounded-sm h-[42%] items-center">
+          <div className="flex flex-col gap-2 border-1 border-gray-400 p-2 rounded-sm h-[290px] items-center">
             <h4 className="font-semibold text-2xl">Job Matching</h4>
             <JobMatch data={scoreFinal.JobMatch} />
           </div>
