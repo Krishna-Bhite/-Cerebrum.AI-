@@ -71,4 +71,62 @@
 ---
 
 ## 📦 Project Structure (Simplified)
+## 🔐 Auth Flow
+
+- Powered by **Firebase Authentication**
+- Users stored in Firestore using `createUserWithEmailAndPassword`
+- Cookie-based session with `next-cookies`
+- Session validated in middleware/layout with `verifySession`
+
+---
+
+## 📊 Data Flow Examples
+
+### Interview Flow
+- User sets `tech + level`
+- Questions generated with `generateText(prompt)`
+- Vapi captures audio + converts to text
+- Gemini analyzes response → sends report → displayed in UI
+
+### ATS Check Flow
+- Resume (.docx) uploaded → Cloudinary → Parsed by Mammoth
+- Resume + JD → `generateText()` prompt → JSON Report
+- Visualized using Recharts
+
+---
+
+## 📱 Responsive Design
+
+- Fully mobile-friendly
+- Built with TailwindCSS, shadcn/ui, and custom layout components
+
+---
+
+## 📈 Future Roadmap
+
+- [ ] Add real-time feedback during interviews
+- [ ] Support `.pdf` resumes
+- [ ] LinkedIn profile optimization
+- [ ] Interview preparation roadmap with progress tracking
+- [ ] Shareable/downloadable reports
+
+---
+
+## 🧑‍💻 Author
+
+**Akhilesh Shivaji Talekar**
+
+- 🔗 [LinkedIn](https://linkedin.com/in/akhileshtalekar)
+
+---
+
+## 📜 License
+
+MIT
+
+---
+
+## 🤝 Contributions
+
+PRs and feedback are welcome! Please open issues or submit pull requests.
 
