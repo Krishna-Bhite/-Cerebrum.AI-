@@ -114,10 +114,7 @@
 
 ## 🧑‍💻 Author
 
-**Akhilesh Shivaji Talekar**
-
-- 🔗 [LinkedIn](https://linkedin.com/in/akhileshtalekar)
-
+**Krishna Balasaheb Bhite**
 ---
 
 ## 📜 License
